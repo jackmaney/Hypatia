@@ -1,15 +1,24 @@
 #!perl
 use strict;
 use warnings;
+
+
+BEGIN
+{
+    eval "require DBD::SQLite";
+    if($@)
+    {
+	require Test::More;
+	Test::More::Plan(skip_all=>"DBD::SQLite is required to run these tests.")
+    }
+}
+
 use Test::More tests => 5;
 use Hypatia::DBI;
 use DBI;
 use Scalar::Util qw(blessed);
 use Cwd;
 use Path::Class;
-use Class::Load qw(try_load_class);
-
-try_load_class("DBD::SQLite") or plan skip_all => 'DBD::SQLite is required to run this test.';
 
 my $cwd = getcwd();
 my $dir = $ENV{TEMP} ? $ENV{TEMP} : $cwd;

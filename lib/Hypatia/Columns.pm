@@ -1,6 +1,6 @@
 package Hypatia::Columns;
 {
-  $Hypatia::Columns::VERSION = '0.012';
+  $Hypatia::Columns::VERSION = '0.0121';
 }
 use Moose;
 use Array::Utils qw(unique);
@@ -114,7 +114,7 @@ Hypatia::Columns
 
 =head1 VERSION
 
-version 0.012
+version 0.0121
 
 =head1 AUTHOR
 

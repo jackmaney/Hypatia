@@ -29,14 +29,13 @@ my %WriteMakefileArgs = (
     "Class::Load" => 0,
     "DBI" => 0,
     "Data::Dumper" => 0,
-    "Hypatia::Config" => 0,
     "Moose" => 0,
     "Moose::Util::TypeConstraints" => 0,
     "namespace::autoclean" => 0,
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.01",
+  "VERSION" => "0.0121",
   "test" => {
     "TESTS" => "t/*.t"
   }
