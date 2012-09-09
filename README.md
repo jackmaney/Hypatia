@@ -10,33 +10,34 @@ So, for example, to get a line graph in [Chart::Clicker](https://metacpan.org/mo
 <pre>
 use strict;
 use warnings;
-use Chart::Clicker;
-use Hypatia::Chart::Clicker::Line;
+use Hypatia;
 
-my $hypatia=Hypatia::Chart::Clicker::Line->new({
-  dbi=>{
-    dsn=>"dbi:MySQL:dbname=database;host=localhost",
-    username=>"jdoe",
-    password=>"sooperseekrit",
-    query=>"select DATE(time_of_sale) as date,sum(revenue) as daily_revenue
-    from widget_sales
-    group by DATE(time_of_sale)"
+my $hypatia=Hypatia->new({
+    back_end=>"Chart::Clicker",
+    graph_type=>"Line",
+    dbi=>{
+	dsn=>"dbi:MySQL:dbname=database;host=localhost",
+	username=>"jdoe",
+	password=>"sooperseekrit",
+	query=>"select DATE(time_of_sale) as date,sum(revenue) as daily_revenue
+	from widget_sales
+	group by DATE(time_of_sale)"
     },
-  columns=>{"x"=>"date","y"=>"daily_revenue"},
-  output=>"line_graph.png"
+    columns=>{"x"=>"date","y"=>"daily_revenue"}
 });
 
-my $cc=$hypatia->chart; #This is a Chart::Clicker object that you can do stuff with.
+#grabs data from the query and puts it into a Chart::Clicker line graph
+my $cc=$hypatia->chart;
 
-#Or you can just write it to the specified output file for a basic, functional line graph.
+#Since $cc is a Chart::Clicker object, we can now do whatever we want to it.
 
-$hypatia->write;
+$cc->title->text("Total Daily Revenue for Widget Sales");
+$cc->write_output("daily_revenue.png");
 
 </pre>
 
 At the moment there is only limited support for part of Chart::Clicker, but this will expand to include support for:
 
-* [Chart::Clicker](https://metacpan.org/module/Chart::Clicker)
 * [GraphViz2](https://metacpan.org/module/GraphViz2)
 * R (via [Statistics::R](https://metacpan.org/release/Statistics-R)).
 * [GD::Graph](https://metacpan.org/module/GD::Graph) (including 3D support with [GD::Graph3D](https://metacpan.org/module/GD::Graph3d)).
