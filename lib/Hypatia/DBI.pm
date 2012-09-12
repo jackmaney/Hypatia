@@ -1,16 +1,17 @@
 package Hypatia::DBI;
 {
-  $Hypatia::DBI::VERSION = '0.0121';
+  $Hypatia::DBI::VERSION = '0.02';
 }
 use strict;
 use warnings;
 use Moose;
 use DBI;
+use Scalar::Util qw(blessed);
 use namespace::autoclean;
 
 
 
-has 'dsn'=>(isa=>'Str',is=>'ro',required=>1);
+has 'dsn'=>(isa=>'Str',is=>'ro');
 
 has [qw(username password)]=>(isa=>'Str',is=>'ro',default=>"");
 
@@ -21,12 +22,51 @@ has 'table'=>(isa=>'Str',is=>'ro',predicate=>'has_table');
 has 'query'=>(isa=>'Str',is=>'ro',predicate=>'has_query');
 
 
-has 'dbh'=>(isa=>'Maybe[DBI::db]',is=>'ro',init_arg=>undef,lazy=>1,builder=>'_connect_db');
+has 'dbh'=>(isa=>'DBI::db',is=>'ro');
 
 #Disabling this flag will skip the database connection.  This is for testing only.
 
 has 'connect'=>(isa=>'Bool',is=>'ro',default=>1);
 
+
+
+around BUILDARGS=>sub
+{
+	my $orig  = shift;
+	my $class = shift;
+	my $args=shift;
+	
+	confess "Argument passed to BUILDARGS is not a hash reference" unless ref $args eq ref {};
+	
+	my $dbh=$args->{dbh};
+	
+	foreach("username","password")
+	{
+		$args->{$_}="" unless defined $args->{$_};
+	}
+	
+	$args->{attributes}={} unless(defined $args->{attributes} and ref($args->{attributes}) eq ref{});
+	
+	if(defined $dbh and blessed($dbh) eq 'DBI::db')
+	{
+		unless($dbh->{Active})
+		{
+			confess "Database connection is inactive, and unable to reconnect (no DSN)" unless $args->{dsn};
+			
+			my $dbh = DBI->connect($args->{dsn},$args->{username},$args->{password},$args->{attributes}) or confess DBI->errstr;
+		}
+	}
+	else
+	{
+		confess "Cannot connect: neither a connection nor a DSN were passed" unless $args->{dsn};
+		
+		$dbh = DBI->connect($args->{dsn},$args->{username},$args->{password},$args->{attributes}) or confess DBI->errstr;
+	}
+	
+	$args->{dbh}=$dbh;
+	
+	return $class->$orig($args);
+};
 
 sub data
 {
@@ -117,24 +157,6 @@ sub data
 }
 
 
-
-sub _connect_db
-{
-	my $self=shift;
-	
-	if($self->connect)
-	{
-	    my $dbh=DBI->connect($self->dsn,$self->username,$self->password,$self->attributes) or confess DBI->errstr;
-	
-	    return $dbh;
-	}
-	else
-	{
-	    return undef;
-	}
-}
-
-
 sub _build_query
 {
 	my $self=shift;
@@ -190,7 +212,7 @@ sub BUILD
 
 
 
-__PACKAGE__->meta->make_immutable;
+#__PACKAGE__->meta->make_immutable;
 1;
 
 __END__
@@ -203,13 +225,13 @@ Hypatia::DBI
 
 =head1 VERSION
 
-version 0.0121
+version 0.02
 
 =head1 ATTRIBUTES
 
 =head2 dsn,username,password,attributes
 
-These are strings that are fed directly into the C<connect> method of L<DBI>.  The C<dsn> attribute is required and both C<username> and C<password> default to C<""> (which is useful if, for example, you're using a SQLite database).  The hash reference C<attributes> contains any optional key-value pairs to be passed to L<DBI>'s C<connect> method.  See the L<DBI> documentation for more details.
+These are strings that are fed directly into the C<connect> method of L<DBI>.  The <dsn> attribute is not required as long as you pass an active database handle into the C<dbh> attribute (see below). Both C<username> and C<password> default to C<""> (which is useful if, for example, you're using a SQLite database).  The hash reference C<attributes> contains any optional key-value pairs to be passed to L<DBI>'s C<connect> method.  See the L<DBI> documentation for more details.
 
 =head2 query,table
 
@@ -217,11 +239,11 @@ These strings represent the source of the data within the database represented b
 
 =head2 dbh
 
-This is the database handle returned from the C<connect> method of L<DBI>.  This attribute is automatically set at the time of object creation.  Don't tinker with it (just use it).
+This optional attribute is the database handle that will be used to grab the data. If it is not supplied, then a connection will be made using the C<dsn>,C<username>,C<password>, and C<attributes> attributes (if possible).
 
 =head1 METHODS
 
-=head2 C<data(@columns,{query=>$query}])>
+=head2 C<< data(@columns,{query=>$query}]) >>
 
 This method grabs the resulting data from the query returned by the C<build_query> method.  The returned data structure is a hash reference of array references where the keys correspond to column names (ie the elements of the C<@columns> array) and the values of the hash reference are the values of the given column returned by the query from the C<_build_query> method.
 

@@ -11,6 +11,7 @@ lib/Hypatia/Base.pm
 lib/Hypatia/Columns.pm
 lib/Hypatia/DBI.pm
 t/columns_native_validation.t
+t/dbi_dbh_table.t
 t/dbi_table.t
 t/load.t
 t/release-pod-syntax.t

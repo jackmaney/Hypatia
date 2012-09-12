@@ -1,5 +1,10 @@
 Revision history for Hypatia
 
-0.0121    2012-09-08 22:51:24 America/Chicago
+0.02      2012-09-11 22:29:07 America/Chicago
 
-0.0121    2012-09-08 22:50:38 America/Chicago
+0.02      2012-09-11 22:27:48 America/Chicago
+
+ - Updated Hypatia::DBI so that an active database handle can be passed into the dbh attribute (as per https://github.com/jackmaney/Hypatia/issues/1).
+ - Added an acknowledgements section to Hypatia.pm
+ - Fixed a typo in the test dbi_table.t
+ - A few documentation fixes.

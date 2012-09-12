@@ -1,6 +1,6 @@
 package Hypatia;
 {
-  $Hypatia::VERSION = '0.0121';
+  $Hypatia::VERSION = '0.02';
 }
 use Moose;
 use Hypatia::Columns;
@@ -116,7 +116,7 @@ Hypatia - A Data Visualization API
 
 =head1 VERSION
 
-version 0.0121
+version 0.02
 
 =head1 SYNOPSIS
 
@@ -156,21 +156,7 @@ Currently, only bindings for L<Chart::Clicker> (via L<Hypatia::Chart::Clicker>) 
 
 This distribution makes use of L<DBI>, but isn't an extension of L<DBI>, and hence doesn't belong in the C<DBIx::*> namespace.  It also isn't an extension of, eg, L<Chart::Clicker>, and thus shouldn't be in the C<Chartx::Clicker> namespace (or should that be C<Chart::Clickerx>?  C<Chart::xClicker>?  Bah!).
 
-So, instead, this distribution is named after L<a mathematician and one of the librarians of the Great Library of Alexandria|http://en.wikipedia.org/wiki/Hypatia>:
-
-=head1 ATTRIBUTES
-
-=head2 back_end
-
-This string attribute represents the general name of the data visualization API that you wish to use.  For right now, the only supported value is C<Chart::Clicker>.
-
-=head2 graph_type
-
-This string attribute represents the type of graph that you want: 
-
-=encoding utf8
-
-	Hypatia (ca. AD 350--370--March 415) ( /haɪˈpeɪʃə/ hy-pay-shə; Ancient Greek: Ὑπατία; Hypatía) was a Greek Neoplatonist philosopher in Roman Egypt who was the 	first historically noted woman in mathematics. As head of the Platonist school at Alexandria, she also taught philosophy and astronomy.
+So, instead, this distribution is named after L<the first female mathematician of historical note and a mathematician and one of the librarians of the Great Library of Alexandria|http://en.wikipedia.org/wiki/Hypatia>
 
 =head2 WARNING
 
@@ -187,6 +173,28 @@ Although I've put a considerable amount of thought into the API, this software s
 =item * For L<Hypatia::Chart::Clicker>, include an C<Options> object that allows for direct in-lining of C<Chart::Clicker> options (rather than creating them via the C<graph> method and then altering the resulting C<Chart::Clicker> object).
 
 =item * Allow "reasonable" defaults for column names and types. For example, if we have a line graph in L<Chart::Clicker>, and if the C<query> only specifies two columns, then take the first column to be of type C<x> and the second of type C<y>. To do this properly, the query will have to be parsed. Sadly, L<Parse::SQL> doesn't seem to correctly parse queries that contain sub-queries.
+
+=back
+
+=head1 ATTRIBUTES
+
+=head2 back_end
+
+This string attribute represents the general name of the data visualization API that you wish to use.  For right now, the only supported value is C<Chart::Clicker>.
+
+=head2 graph_type
+
+This string attribute represents the type of graph that you want: 
+
+=head1 ACKNOWLEDGEMENTS
+
+I'd like to thank the following people for suggestions in making this distribution better. Any (constructive) criticism and feedback is welcome (jack at jackmaney dot com or jackmaney at gmail dot com).
+
+=over 4
+
+=item 1. L<Cory Watson|http://about.me/cory.g.watson> (aka L<gphat|https://metacpan.org/author/GPHAT>) for suggestions that greatly streamlined the API.
+
+=item 2. L<David Precious|http://www.preshweb.co.uk/> for the idea of passing an active database handle into a L<Hypatia::DBI> object, instead of requiring the connection parameters.
 
 =back
 

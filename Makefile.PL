@@ -14,7 +14,6 @@ my %WriteMakefileArgs = (
   "BUILD_REQUIRES" => {
     "Cwd" => 0,
     "Path::Class" => 0,
-    "Scalar::Util" => 0,
     "Test::More" => 0
   },
   "CONFIGURE_REQUIRES" => {
@@ -31,11 +30,12 @@ my %WriteMakefileArgs = (
     "Data::Dumper" => 0,
     "Moose" => 0,
     "Moose::Util::TypeConstraints" => 0,
+    "Scalar::Util" => 0,
     "namespace::autoclean" => 0,
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.0121",
+  "VERSION" => "0.02",
   "test" => {
     "TESTS" => "t/*.t"
   }

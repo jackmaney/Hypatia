@@ -30,16 +30,14 @@ unlink $file if -e $file;
 open(my $fh,">",$file) or die $!;
 close($fh);
 
-my $dsn = "dbi:SQLite:dbname=$file";
-my $dbh=DBI->connect($dsn,"","");
+my $dbh=DBI->connect("dbi:SQLite:dbname=$file","","");
 
 ok(blessed($dbh) eq 'DBI::db');
 
 $dbh->do("create table dbi_test (x real,y real)") or die $dbh->errstr;
 
-$dbh->disconnect;
 
-my $dbi = Hypatia::DBI->new({dsn=>$dsn,table=>"dbi_test"});
+my $dbi = Hypatia::DBI->new({dbh=>$dbh,table=>"dbi_test"});
 
 ok(blessed($dbi) eq 'Hypatia::DBI');
 ok(blessed($dbi->dbh) eq 'DBI::db');
