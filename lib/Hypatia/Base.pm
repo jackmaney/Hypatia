@@ -1,6 +1,6 @@
 package Hypatia::Base;
 {
-  $Hypatia::Base::VERSION = '0.02';
+  $Hypatia::Base::VERSION = '0.021';
 }
 use Moose;
 use Hypatia::DBI;
@@ -57,7 +57,7 @@ Hypatia::Base - An Abstract Base Class
 
 =head1 VERSION
 
-version 0.02
+version 0.021
 
 =head1 ATTRIBUTES
 

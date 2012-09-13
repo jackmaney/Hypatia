@@ -1,6 +1,6 @@
 package Hypatia::DBI;
 {
-  $Hypatia::DBI::VERSION = '0.02';
+  $Hypatia::DBI::VERSION = '0.021';
 }
 use strict;
 use warnings;
@@ -22,7 +22,7 @@ has 'table'=>(isa=>'Str',is=>'ro',predicate=>'has_table');
 has 'query'=>(isa=>'Str',is=>'ro',predicate=>'has_query');
 
 
-has 'dbh'=>(isa=>'DBI::db',is=>'ro');
+has 'dbh'=>(isa=>'Maybe[DBI::db]',is=>'ro');
 
 #Disabling this flag will skip the database connection.  This is for testing only.
 
@@ -46,6 +46,7 @@ around BUILDARGS=>sub
 	}
 	
 	$args->{attributes}={} unless(defined $args->{attributes} and ref($args->{attributes}) eq ref{});
+	$args->{connect} = 1 unless defined $args->{connect};
 	
 	if(defined $dbh and blessed($dbh) eq 'DBI::db')
 	{
@@ -56,11 +57,15 @@ around BUILDARGS=>sub
 			my $dbh = DBI->connect($args->{dsn},$args->{username},$args->{password},$args->{attributes}) or confess DBI->errstr;
 		}
 	}
-	else
+	elsif($args->{connect})
 	{
 		confess "Cannot connect: neither a connection nor a DSN were passed" unless $args->{dsn};
 		
 		$dbh = DBI->connect($args->{dsn},$args->{username},$args->{password},$args->{attributes}) or confess DBI->errstr;
+	}
+	else
+	{
+		undef $dbh;
 	}
 	
 	$args->{dbh}=$dbh;
@@ -225,7 +230,7 @@ Hypatia::DBI
 
 =head1 VERSION
 
-version 0.02
+version 0.021
 
 =head1 ATTRIBUTES
 
