@@ -31,7 +31,7 @@ coerce "HypatiaColumns",from "HashRef", via {Hypatia::Columns->new({columns=>$_}
 
 #Note: the attribute here is named 'cols' so that we can use the 'columns' handle from the corresponding Hypatia::Columns object.
 #We use BUILDARGS to do the ol' switcheroo.
-has 'cols'=>(isa=>'HypatiaColumns',is=>'ro',coerce=>1,handles=>['columns']);
+has 'cols'=>(isa=>'HypatiaColumns',is=>'rw',coerce=>1,handles=>['columns'],predicate=>'using_columns');
 
 around BUILDARGS=>sub
 {
