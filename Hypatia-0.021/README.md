@@ -1,8 +1,6 @@
 Hypatia
 =======
 
-**Note:** The files for the distribution itself (ie what you'd get from [CPAN](https://metacpan.org/release/Hypatia)) are available in the folder `Hypatia-$version` (where `$version` represents the version number).
-
 Hypatia is a new data visualization API written in Perl.  It takes advantage of several Modern Perl features, including [Moose](https://metacpan.org/module/Moose) and [Dist::Zilla](https://metacpan.org/module/Dist::Zilla) (in fact, as of the time of this writing, the only code committed is for a Dist::Zilla build).
 
 For reporting and analysis of data, it's often useful to have charts and graphs of various kinds:  line graphs, bar charts, histograms, etc.  Of course, CPAN has modules for data visualization--in fact, there are [quite](https://metacpan.org/module/Chart::Clicker) [a](https://metacpan.org/module/GD::Graph) [few](https://metacpan.org/module/GraphViz2) [of](https://metacpan.org/module/Statistics::R) [them](https://metacpan.org/module/Chart::Gnuplot), each with different features and wildly different syntaxes.  The aim of Hypatia is to provide a layer between DBI and these data visualization modules, so that one can get a basic, "no-frills" chart with as little knowledge of the syntax of the particular data visualization package as possible.

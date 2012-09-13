@@ -1,4 +1,7 @@
 package Hypatia::Columns;
+{
+  $Hypatia::Columns::VERSION = '0.021';
+}
 use Moose;
 use Array::Utils qw(unique);
 
@@ -100,3 +103,28 @@ sub BUILD
 
 
 1;
+
+__END__
+
+=pod
+
+=head1 NAME
+
+Hypatia::Columns
+
+=head1 VERSION
+
+version 0.021
+
+=head1 AUTHOR
+
+Jack Maney <jack@jackmaney.com>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2012 by Jack Maney.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
