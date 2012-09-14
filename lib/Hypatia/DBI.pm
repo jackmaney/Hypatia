@@ -188,8 +188,18 @@ sub _build_query
 	
 	unless(@columns)
 	{
-		warn "WARNING: no arguments passed to the _build_query method";
-		return undef;
+		if($self->has_query)
+		{
+			return "select * from ( " . $self->query . " )query";
+		}
+		elsif($self->has_table)
+		{
+			return "select * from " . $self->table;
+		}
+		else
+		{
+			return undef;
+		}
 	}
 	
 	my @dereferenced_columns=();
