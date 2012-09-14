@@ -1,14 +1,13 @@
 package Hypatia::DBI::Test::SQLite;
 use Moose;
 use DBI;
-use JSON;
 use Path::Class;
 
 has 'dir'=>(isa=>'Str', is=>'ro',default=>sub{ return $ENV{TMP} ? $ENV{TMP} : "."; });
 
 has 'sqlite_db_file'=>(isa=>'Str',is=>'ro',default=>"hypatia_test.db");
 
-has 'json_file'=>(isa=>'Str',is=>'ro',lazy=>1,default=>"sqlite.json");
+has 'sql_file'=>(isa=>'Str',is=>'ro',lazy=>1,default=>"sqlite.sql");
 
 has [qw(username password)]=>(isa=>'Str',is=>'ro',default=>"");
 
@@ -34,27 +33,15 @@ sub load
     my $dbh=$self->dbh;
     my $json=JSON->new;
     
-    open(my $read,"<",$self->json_file) or die $!;
+    open(my $read,"<",$self->sql_file) or die $!;
     
-    my $json_str="";
-    while(<$read>)
-    {
-        chomp;
-        $json_str .= " " . $_;
-    }
+    my @sql_lines = <$read>;
     close($read);
     
-    my $table_data=$json->decode($json_str);
+    my $sql_str = join(" ",@sql_lines);
     
-    foreach my $table(keys %$table_data)
-    {
-        $dbh->do($table->{create}) or die $dbh->errstr;
-        
-        foreach my $insert (@{$table->{insert}})
-        {
-            $dbh->do($insert) or die $dbh->errstr;
-        }
-    }
+    $dbh->do($sql_str) or die $dbh->errstr;
+    
 }
 
 
