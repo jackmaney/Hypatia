@@ -6,7 +6,7 @@ use Array::Utils qw(unique);
 has 'column_types'=>(isa=>'ArrayRef[Str]',is=>'ro',default=>sub{[qw(x y)]});
 
 #Actual column values...this hash ref will be filled in from the coercion
-has 'columns'=>(isa=>'HashRef[Str|ArrayRef[Str]]',is=>'ro',required=>1);
+has 'columns'=>(isa=>'HashRef[Str|ArrayRef[Str]]',is=>'ro');
 
 #Native validation works as follows:
 #

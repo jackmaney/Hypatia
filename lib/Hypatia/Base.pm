@@ -26,7 +26,7 @@ This is a hash reference whose keys represent the column types (often C<x> and C
 
 =cut
 
-subtype 'HypatiaColumns' => as class_type("Hypatia::Columns");
+subtype 'HypatiaColumns' => as maybe_type("Hypatia::Columns");
 coerce "HypatiaColumns",from "HashRef", via {Hypatia::Columns->new({columns=>$_})};
 
 #Note: the attribute here is named 'cols' so that we can use the 'columns' handle from the corresponding Hypatia::Columns object.
