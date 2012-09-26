@@ -13,7 +13,6 @@ my %WriteMakefileArgs = (
   "AUTHOR" => "Jack Maney <jack\@jackmaney.com>",
   "BUILD_REQUIRES" => {
     "Cwd" => 0,
-    "Path::Class" => 0,
     "Test::More" => 0
   },
   "CONFIGURE_REQUIRES" => {
@@ -28,14 +27,16 @@ my %WriteMakefileArgs = (
     "Class::Load" => 0,
     "DBI" => 0,
     "Data::Dumper" => 0,
+    "JSON" => 0,
     "Moose" => 0,
     "Moose::Util::TypeConstraints" => 0,
+    "Path::Class" => 0,
     "Scalar::Util" => 0,
     "namespace::autoclean" => 0,
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.021",
+  "VERSION" => "0.025",
   "test" => {
     "TESTS" => "t/*.t"
   }

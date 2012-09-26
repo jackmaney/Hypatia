@@ -1,6 +1,6 @@
 package Hypatia;
 {
-  $Hypatia::VERSION = '0.021';
+  $Hypatia::VERSION = '0.025';
 }
 use Moose;
 use Hypatia::Columns;
@@ -28,7 +28,7 @@ sub BUILD
     
     foreach(keys %allowed_graph_types)
     {
-		$allowed_graph_types{"Hypatia::" . $_} = $allowed_graph_types{$_};
+	$allowed_graph_types{"Hypatia::" . $_} = $allowed_graph_types{$_};
     }
     
     my $back_end=$self->back_end;
@@ -43,19 +43,25 @@ sub BUILD
     
     if($self->has_graph_type)
     {
-		$graph_type=$self->graph_type;
-		
-		if($graph_type)
-		{
-			confess "The graph_type of $graph_type is not supported with a back_end of $back_end"
-			unless grep{$_ eq $graph_type}@{$allowed_graph_types{$back_end}};
-			
-			if($back_end eq "Hypatia::Chart::Clicker" and $graph_type=~/Stacked/)
-			{
-				$graph_type=~s/Stacked//;
-				$stacked=1;
-			}
-		}
+	$graph_type=$self->graph_type;
+	
+	if($graph_type)
+	{
+	    $graph_type = ucfirst $graph_type;
+	    
+	    confess "The graph_type of $graph_type is not supported with a back_end of $back_end"
+	    unless grep{$_ eq $graph_type}@{$allowed_graph_types{$back_end}};
+	    
+	    if($back_end eq "Hypatia::Chart::Clicker" and $graph_type=~/Stacked/)
+	    {
+		$graph_type=~s/Stacked//;
+		$stacked=1;
+	    }
+	}
+	elsif($back_end eq "Hypatia::Chart::Clicker")
+	{
+	    confess "The argument of graph_type is required for a back_end of Chart::Clicker";
+	}
     }
     
     my %args=%{$self->args_to_pass};
@@ -86,19 +92,19 @@ around BUILDARGS =>sub
     
     confess "Argument passed to BUILDARGS is not a hash reference" unless ref $args eq ref {};
     
-	confess "No back_end argument given" unless defined $args->{back_end} and (ref $args->{back_end} eq ref "");
-		
-	delete $args->{engine} if defined $args->{engine};
-		
-	$args->{args_to_pass}={};
-		
-	foreach my $attr(keys %$args)
+    confess "No back_end argument given" unless defined $args->{back_end} and (ref $args->{back_end} eq ref "");
+    
+    delete $args->{engine} if defined $args->{engine};
+    
+    $args->{args_to_pass}={};
+    
+    foreach my $attr(keys %$args)
+    {
+	unless($attr eq "back_end" or $attr eq "graph_type")
 	{
-		unless($attr eq "back_end" or $attr eq "graph_type")
-		{
-			$args->{args_to_pass}->{$attr}=$args->{$attr};
-			delete $args->{$attr};
-		}
+	    $args->{args_to_pass}->{$attr}=$args->{$attr};
+	    delete $args->{$attr};
+	}
     }
     return $class->$orig($args);
 };
@@ -116,7 +122,7 @@ Hypatia - A Data Visualization API
 
 =head1 VERSION
 
-version 0.021
+version 0.025
 
 =head1 SYNOPSIS
 
@@ -171,8 +177,6 @@ Although I've put a considerable amount of thought into the API, this software s
 =item * Allow the loading of options via configuration files (initially XML or ini; the only thing making this difficult for JSON is that queries usually take more than one line, and JSON doesn't support multi-line strings).
 
 =item * For L<Hypatia::Chart::Clicker>, include an C<Options> object that allows for direct in-lining of C<Chart::Clicker> options (rather than creating them via the C<graph> method and then altering the resulting C<Chart::Clicker> object).
-
-=item * Allow "reasonable" defaults for column names and types. For example, if we have a line graph in L<Chart::Clicker>, and if the C<query> only specifies two columns, then take the first column to be of type C<x> and the second of type C<y>. To do this properly, the query will have to be parsed. Sadly, L<Parse::SQL> doesn't seem to correctly parse queries that contain sub-queries.
 
 =back
 

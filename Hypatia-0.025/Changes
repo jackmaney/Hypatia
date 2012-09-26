@@ -1,6 +1,8 @@
-Revision history for {{$dist->name}}
+Revision history for Hypatia
 
-{{$NEXT}}
+0.025     2012-09-26 04:14:03 America/Chicago
+
+0.025     2012-09-26 04:09:46 America/Chicago
 
 - Added an abstract column guessing method (meant to be called internally) and a couple of unit tests.
 

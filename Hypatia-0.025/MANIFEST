@@ -10,6 +10,8 @@ lib/Hypatia.pm
 lib/Hypatia/Base.pm
 lib/Hypatia/Columns.pm
 lib/Hypatia/DBI.pm
+lib/Hypatia/DBI/Test/SQLite.pm
+t/blow_up.t
 t/columns_native_validation.t
 t/dbi_dbh_table.t
 t/dbi_table.t

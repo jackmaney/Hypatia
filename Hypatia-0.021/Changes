@@ -1,5 +1,0 @@
-Revision history for Hypatia
-
-0.021     2012-09-13 15:57:43 America/Chicago
-
- - Fixed a bug that prevents the no_connect.t test of Hypatia::Chart::Clicker from passing.

@@ -1,6 +1,6 @@
 package Hypatia::DBI;
 {
-  $Hypatia::DBI::VERSION = '0.021';
+  $Hypatia::DBI::VERSION = '0.025';
 }
 use strict;
 use warnings;
@@ -169,8 +169,18 @@ sub _build_query
 	
 	unless(@columns)
 	{
-		warn "WARNING: no arguments passed to the _build_query method";
-		return undef;
+		if($self->has_query)
+		{
+			return "select * from ( " . $self->query . " )query";
+		}
+		elsif($self->has_table)
+		{
+			return "select * from " . $self->table;
+		}
+		else
+		{
+			return undef;
+		}
 	}
 	
 	my @dereferenced_columns=();
@@ -230,7 +240,7 @@ Hypatia::DBI
 
 =head1 VERSION
 
-version 0.021
+version 0.025
 
 =head1 ATTRIBUTES
 

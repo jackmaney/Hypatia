@@ -31,18 +31,21 @@ coerce "HypatiaColumns",from "HashRef", via {Hypatia::Columns->new({columns=>$_}
 
 #Note: the attribute here is named 'cols' so that we can use the 'columns' handle from the corresponding Hypatia::Columns object.
 #We use BUILDARGS to do the ol' switcheroo.
-has 'cols'=>(isa=>'HypatiaColumns',is=>'rw',coerce=>1,handles=>['columns'],predicate=>'using_columns');
+has 'cols'=>(isa=>'HypatiaColumns',is=>'rw',coerce=>1,handles=>[qw(columns using_columns)],default=>sub{Hypatia::Columns->new});
 
 around BUILDARGS=>sub
 {
 	my $orig  = shift;
-    my $class = shift;
-    my $args=shift;
+	my $class = shift;
+	my $args=shift;
 	
 	confess "Argument is not a hash reference" unless ref $args eq ref {};
 	
-	$args->{cols}=$args->{columns};
-	delete $args->{columns};
+	if(exists $args->{columns})
+	{
+		$args->{cols}=$args->{columns};
+		delete $args->{columns};
+	}
 	
 	return $class->$orig($args);
 };
@@ -77,6 +80,37 @@ B<Note:> The exact requirements of this attribute will vary depending on which s
 
 =cut
 
+=internal_method _guess_columns
+
+This can be thought of as a (quasi) abstract method. By default, this method simply invokes a L<confession|Carp>, but it's meant to be overridden by submodules.
+
+=cut
+
+sub _guess_columns
+{
+	confess "The attribute 'columns' is required";
+}
+
+# This is a setup method for methods overriding _guess_columns.
+# Yes, I know about the Moose keyword 'after', but I'm not
+# sure offhand how to run the code in _setup_guess_columns
+# except if _guess_columns is being overridden.
+sub _setup_guess_columns
+{
+	my $self=shift;
+	
+	my $query=$self->dbi->_build_query;
+	
+	my $dbh=$self->dbh;
+	my $sth=$dbh->prepare($query) or die $dbh->errstr;
+	$sth->execute or die $dbh->errstr;
+	
+	my @return = @{$sth->{NAME}};
+	
+	$sth->finish;
+	
+	return \@return;
+}
 
 
 1;
