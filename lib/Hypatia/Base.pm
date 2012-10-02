@@ -56,6 +56,8 @@ If your data source isn't from a database, then you can store your own data in t
 
 =cut
 
+has 'input_data'=>(isa=>'HashRef',is=>'rw',predicate=>'has_input_data');
+
 
 =attr columns
 
@@ -112,5 +114,102 @@ sub _setup_guess_columns
 	return \@return;
 }
 
+=internal_method _get_data
+
+This method is responsible for returning the data required by the C<graph> methods (as provided by modules extending this module). If the C<columns> attribute isn't set, then column guessing is triggered (via the C<_guess_columns> method). If the data source is from a database connection, then this method grabs it, otherwise it returns the data from the C<input_data> attribute.
+
+=cut
+sub _get_data
+{
+	my $self=shift;
+	my @columns;
+	
+	$self->_guess_columns unless $self->using_columns;
+	
+	if(@_)
+	{
+		@columns=grep{defined}map{$self->columns->{$_}}@_;
+	}
+	else
+	{
+		@columns = @{$self->columns->column_types};
+	}
+	
+	if($self->use_dbi)
+	{	
+		return $self->dbi->data(@columns);
+	}
+	else
+	{
+		return $self->input_data;
+	}
+}
+
+sub _validate_input_data
+{
+	my $self=shift;
+	
+	my $data=shift;
+	
+	return undef unless defined $data;
+	
+	my $first=1;
+	my $num_rows;
+	
+	my @column_list;
+	
+	confess "The columns attribute is required if you wish to pass in input_data" unless $self->using_columns;
+
+	foreach my $type(keys %{$self->columns})
+	{
+		my $col=$self->columns->{$type};
+		
+		if(ref $col eq ref [])
+		{
+			foreach my $c(@$col)
+			{
+				push @column_list,$c unless grep{$c eq $_}@column_list;
+			}
+		}
+		else
+		{
+			push @column_list,$col unless grep{$col eq $_}@column_list;
+		}
+	}
+	
+	foreach my $col(@column_list)
+	{ 
+		unless(grep{$_ eq $col}(keys %$data))
+		{
+			warn "WARNING: Column \"$col\" not found as a key in the input_data attribute\n";
+			return undef;
+		}
+		
+		
+		my @column=@{$data->{$col}};
+		
+		unless(@column == grep{defined $_}@column)
+		{
+			warn "WARNING: Undefined values found in the input_data for column $col";
+			return undef;
+		}
+		
+		if($first)
+		{
+			$num_rows=scalar(@column);
+			$first=0;
+		}
+		else
+		{
+			unless(@{$data->{$col}} == $num_rows)
+			{
+				warn "WARNING: Mismatch for number of elements in input_data values";
+				return undef;
+			}
+		}
+	}
+	
+	return 1;
+}
 
 1;

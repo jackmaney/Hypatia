@@ -95,7 +95,7 @@ sub BUILD
 {
     my $self=shift;
     
-    my @allowed_back_ends = qw(Chart::Clicker);
+    my @allowed_back_ends = qw(Chart::Clicker GraphViz2);
     
     my %allowed_graph_types=(q(Chart::Clicker)=>[qw(Area Bar Bubble CandleStick Line Pie Point PolarArea StackedArea StackedBar)]);
     
@@ -131,6 +131,10 @@ sub BUILD
 	    {
 		$graph_type=~s/Stacked//;
 		$stacked=1;
+	    }
+	    elsif($back_end eq "GraphViz2")
+	    {
+		warn "WARNING: the graph_type attribute of " . $graph_type . " will be ignored in Hypatia::GraphViz2.\n";
 	    }
 	}
 	elsif($back_end eq "Hypatia::Chart::Clicker")

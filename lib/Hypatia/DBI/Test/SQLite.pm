@@ -7,7 +7,7 @@ use namespace::autoclean;
 
 has 'sqlite_dir'=>(isa=>'Str', is=>'ro',default=>sub{ return $ENV{TMP} ? $ENV{TMP} : "."; });
 
-has 'sqlite_db_file'=>(isa=>'Str',is=>'ro',default=>"hypatia_test.db");
+has 'sqlite_db_file'=>(isa=>'Str',is=>'ro',default=>"");
 
 has 'table'=>(isa=>'Str',is=>'ro',required=>1);
 
@@ -16,7 +16,18 @@ has [qw(username password)]=>(isa=>'Str',is=>'ro',default=>"");
 has 'dbh'=>(isa=>'DBI::db',is=>'ro',lazy=>1,init_arg=>undef
     ,default=>sub{
         my $self=shift;
-        my $dbh=DBI->connect("dbi:SQLite:dbname=" . $self->file_with_path,$self->username,$self->password) or confess DBI->errstr;
+        
+        my $file;
+        if($self->sqlite_db_file)
+        {
+            $file=$self->file_with_path;
+        }
+        else
+        {
+            $file="";
+        }
+        
+        my $dbh=DBI->connect("dbi:SQLite:dbname=$file",$self->username,$self->password) or confess DBI->errstr;
         
         return $dbh;
     });
@@ -33,10 +44,13 @@ sub BUILD
 {
     my $self=shift;
     
-    unless(-e $self->file_with_path)
+    if($self->sqlite_db_file)
     {
-        open(my $fh,">",$self->file_with_path) or die $!;
-        close($fh);
+        unless(-e $self->file_with_path)
+        {
+            open(my $fh,">",$self->file_with_path) or die $!;
+            close($fh);
+        }
     }
     
     $self->load_table unless($self->table_exists);
@@ -154,6 +168,40 @@ __DATA__
             "insert into hypatia_test_pie values ('some other thing',2)",
             "insert into hypatia_test_pie values ('some type',0.48)",
             "insert into hypatia_test_pie values ('yet another thing',1.78)"
+        ]
+    },
+    {
+        "table":"hypatia_graphviz_test_k4",
+        "create":"create table hypatia_graphviz_test_k4 (a int, b int)",
+        "insert":[
+            "insert into hypatia_graphviz_test_k4 values(1,2)",
+            "insert into hypatia_graphviz_test_k4 values(1,3)",
+            "insert into hypatia_graphviz_test_k4 values(1,4)",
+            "insert into hypatia_graphviz_test_k4 values(2,3)",
+            "insert into hypatia_graphviz_test_k4 values(2,4)",
+            "insert into hypatia_graphviz_test_k4 values(3,4)"
+        ]
+    },
+    {
+        "table":"hypatia_graphviz_test_petersen",
+        "create":"create table hypatia_graphviz_test_petersen (v1 int,v2 int)",
+        "insert":[
+            "insert into hypatia_graphviz_test_petersen values(1,2)",
+            "insert into hypatia_graphviz_test_petersen values(1,5)",
+            "insert into hypatia_graphviz_test_petersen values(1,6)",
+            "insert into hypatia_graphviz_test_petersen values(2,3)",
+            "insert into hypatia_graphviz_test_petersen values(2,7)",
+            "insert into hypatia_graphviz_test_petersen values(3,4)",
+            "insert into hypatia_graphviz_test_petersen values(3,8)",
+            "insert into hypatia_graphviz_test_petersen values(4,5)",
+            "insert into hypatia_graphviz_test_petersen values(4,9)",
+            "insert into hypatia_graphviz_test_petersen values(5,1)",
+            "insert into hypatia_graphviz_test_petersen values(5,10)",
+            "insert into hypatia_graphviz_test_petersen values(6,8)",
+            "insert into hypatia_graphviz_test_petersen values(6,9)",
+            "insert into hypatia_graphviz_test_petersen values(7,9)",
+            "insert into hypatia_graphviz_test_petersen values(7,10)",
+            "insert into hypatia_graphviz_test_petersen values(8,10)",
         ]
     }
 ]

@@ -1,6 +1,6 @@
 package Hypatia::DBI;
 {
-  $Hypatia::DBI::VERSION = '0.025';
+  $Hypatia::DBI::VERSION = '0.026';
 }
 use strict;
 use warnings;
@@ -240,7 +240,7 @@ Hypatia::DBI
 
 =head1 VERSION
 
-version 0.025
+version 0.026
 
 =head1 ATTRIBUTES
 
