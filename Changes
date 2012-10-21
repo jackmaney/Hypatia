@@ -2,6 +2,14 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+- Added a type library
+
+- Refactored Hypatia::DBI::Test::SQLite, making the JSON a bit more compact.
+
+- Updated some of the Pod.
+
+0.026     2012-10-01 19:07:34 America/Chicago
+
 - Moved some methods from Hypatia::Chart::Clicker to Hypatia::Base in order to facilitate polymorphism with Hypatia::GraphViz2
 
 - After reading through the DBD::SQLite docs, I found out that a database filename of the empty string causes a temp file to be used.

@@ -39,7 +39,17 @@ use Data::Dumper;
 
 For reporting and analysis of data, it's often useful to have charts and graphs of various kinds:  line graphs, bar charts, histograms, etc.  Of course, CPAN has modules for data visualization--in fact, there are L<quite|https://metacpan.org/module/Chart::Clicker> L<a|https://metacpan.org/module/GD::Graph> L<few|https://metacpan.org/module/GraphViz2> L<of|https://metacpan.org/module/Statistics::R> L<them|https://metacpan.org/module/Chart::Gnuplot>, each with different features and wildly different syntaxes.  The aim of Hypatia is to provide a layer between DBI and these data visualization modules, so that one can get a basic, "no-frills" chart with as little knowledge of the syntax of the particular data visualization package as possible.
 
-Currently, only bindings for L<Chart::Clicker> (via L<Hypatia::Chart::Clicker>) is supported.  However, support for other data visualization modules will be supported (see the L</TODO> section below).
+Currently, the only bindings that are supported are:
+
+=over 4
+
+=item L<Chart::Clicker> (via L<Hypatia::Chart::Clicker>)
+
+=item L<GraphViz2> (via L<Hypatia::GraphViz2>)
+
+=back
+
+However, support for other data visualization modules will be supported (see the L</TODO> section below).
 
 =head2 Hypatia?
 
@@ -55,11 +65,13 @@ Although I've put a considerable amount of thought into the API, this software s
 
 =over 4
 
-=item * Expand the API to other data visualization packages. L<Hypatia::GraphViz2> will be out soon, and other bindings will follow.
+=item * Expand the API to other data visualization packages.
+
+=item * Add unit tests and more attributes to L<Hypatia::GraphViz2>.
 
 =item * Allow the loading of options via configuration files (initially XML or ini; the only thing making this difficult for JSON is that queries usually take more than one line, and JSON doesn't support multi-line strings).
 
-=item * For L<Hypatia::Chart::Clicker>, include an C<Options> object that allows for direct in-lining of C<Chart::Clicker> options (rather than creating them via the C<graph> method and then altering the resulting C<Chart::Clicker> object).
+=item * Finish up some more of the options in L<Hypatia::Chart::Clicker>, and include some default "prettification" options that adds a reasonable amount of padding, fudging, etc.
 
 =back
 
@@ -72,6 +84,8 @@ I'd like to thank the following people for suggestions in making this distributi
 =item 1. L<Cory Watson|http://about.me/cory.g.watson> (aka L<gphat|https://metacpan.org/author/GPHAT>) for suggestions that greatly streamlined the API.
 
 =item 2. L<David Precious|http://www.preshweb.co.uk/> for the idea of passing an active database handle into a L<Hypatia::DBI> object, instead of requiring the connection parameters.
+
+=item 3. L<Ron Savage|http://savage.net.au/index.html> for updating L<GraphViz2> in order to make unit tests easier.
 
 =back
 
