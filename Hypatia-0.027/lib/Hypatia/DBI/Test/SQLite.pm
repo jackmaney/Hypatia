@@ -1,6 +1,6 @@
 package Hypatia::DBI::Test::SQLite;
 {
-  $Hypatia::DBI::Test::SQLite::VERSION = '0.026';
+  $Hypatia::DBI::Test::SQLite::VERSION = '0.027';
 }
 use Moose;
 use DBI;
@@ -96,9 +96,11 @@ sub load_table
         {
             $dbh->do($_->{create}) or die $dbh->errstr;
             
-            foreach my $insert(@{$_->{insert}})
+            foreach my $value_array (@{$_->{insert}})
             {
-                $dbh->do($insert) or die $dbh->errstr;
+                my $insert_statement = "insert into " . $self->table . " values (" . join(",",@$value_array) . ")";
+                $insert_statement=~s/"/'/g;
+                $dbh->do($insert_statement) or die $dbh->errstr;
             }
             $found=1;
             last;
@@ -125,7 +127,7 @@ Hypatia::DBI::Test::SQLite
 
 =head1 VERSION
 
-version 0.026
+version 0.027
 
 =head1 AUTHOR
 
@@ -142,93 +144,111 @@ the same terms as the Perl 5 programming language system itself.
 
 __DATA__
 [
-    {"table":"hypatia_test_xy",
-    "create":"create table hypatia_test_xy (x1 int, x2 float, y1 float,y2 float)",
-    "insert":["insert into hypatia_test_xy values(1,1.1,7.22,2.1)",
-        "insert into hypatia_test_xy values(2,-2.1,3.88,-0.5)",
-        "insert into hypatia_test_xy values(4,3.3,6.2182,3)",
-        "insert into hypatia_test_xy values(6,0,2.71828,3.1415926)",
-        "insert into hypatia_test_xy values(5,7,4.1,1.41)"]
+    {
+        "table":"hypatia_test_xy",
+        "create":"create table hypatia_test_xy (x1 int, x2 float, y1 float,y2 float)",
+        "insert":[
+            [1,1.1,7.22,2.1],
+            [2,-2.1,3.88,-0.5],
+            [4,3.3,6.2182,3],
+            [6,0,2.71828,3.1415926],
+            [5,7,4.1,1.41]
+        ]
     },
     {
         "table":"hypatia_test_bubble",
         "create":"create table hypatia_test_bubble (a float, b float, c float)",
         "insert":[
-            "insert into hypatia_test_bubble values (0,3,1.1)",
-            "insert into hypatia_test_bubble values (0.9,4,0.5)",
-            "insert into hypatia_test_bubble values (2,6.1,2.2)",
-            "insert into hypatia_test_bubble values (6,4.4,1.9)"
+            [0,3,1.1],
+            [0.9,4,0.5],
+            [2,6.1,2.2],
+            [6,4.4,1.9]
         ]
     },
-    {"table":"hypatia_test_bubble_multi1",
-    "create":"create table hypatia_test_bubble_multi1 (x1 float, y1 float, size1 float, x2 float, y2 float, size2 float)",
-    "insert":[
-        "insert into hypatia_test_bubble_multi1 values (3, 2, 0.4, 5, 1, 0.8)",
-        "insert into hypatia_test_bubble_multi1 values (1, 6, 1, 4, 7, 1.3)",
-        "insert into hypatia_test_bubble_multi1 values (6, 7, 2.01, 5, -1,1.38)",
-        "insert into hypatia_test_bubble_multi1 values (8, 2, 0.2, 9, 5, 3)"
-    ]
+    {
+    
+        "table":"hypatia_test_bubble_multi1",
+        "create":"create table hypatia_test_bubble_multi1 (x1 float, y1 float, size1 float, x2 float, y2 float, size2 float)",
+        "insert":[
+            [3, 2, 0.4, 5, 1, 0.8],
+            [1, 6, 1, 4, 7, 1.3],
+            [6, 7, 2.01, 5, -1,1.38],
+            [8, 2, 0.2, 9, 5, 3]
+        ]
     },
     {
         "table":"hypatia_test_bubble_multi2",
         "create":"create table hypatia_test_bubble_multi2 (x float, y1 float, size1 float, y2 float, size2 float)",
         "insert":[
-            "insert into hypatia_test_bubble_multi2 values (-1,2,4,-3,1)",
-            "insert into hypatia_test_bubble_multi2 values (1,1,0.4,5,1.21)",
-            "insert into hypatia_test_bubble_multi2 values (5,0,2,8,3)",
-            "insert into hypatia_test_bubble_multi2 values (6,-3,2,8,0.5)"
+            [-1,2,4,-3,1],
+            [1,1,0.4,5,1.21],
+            [5,0,2,8,3],
+            [6,-3,2,8,0.5]
         ]
-    }
-    ,{
+    },
+    {
         "table":"hypatia_test_bubble_fail",
         "create":"create table hypatia_test_bubble_fail (x float, y float, z float, w float)",
         "insert":[
-            "insert into hypatia_test_bubble_fail values (1,2,3,4)",
-            "insert into hypatia_test_bubble_fail values (1,2,3,4)"
+            [1,2,3,4],
+            [1,2,3,4]
         ]
     },
     {
         "table":"hypatia_test_pie",
         "create":"create table hypatia_test_pie (type text, number float)",
         "insert":[
-            "insert into hypatia_test_pie values ('some type',1)",
-            "insert into hypatia_test_pie values ('some other thing',2)",
-            "insert into hypatia_test_pie values ('some type',0.48)",
-            "insert into hypatia_test_pie values ('yet another thing',1.78)"
+            ["'some type'",1],
+            ["'some other thing'",2],
+            ["'some type'",0.48],
+            ["'yet another thing'",1.78]
         ]
     },
     {
         "table":"hypatia_graphviz_test_k4",
         "create":"create table hypatia_graphviz_test_k4 (a int, b int)",
         "insert":[
-            "insert into hypatia_graphviz_test_k4 values(1,2)",
-            "insert into hypatia_graphviz_test_k4 values(1,3)",
-            "insert into hypatia_graphviz_test_k4 values(1,4)",
-            "insert into hypatia_graphviz_test_k4 values(2,3)",
-            "insert into hypatia_graphviz_test_k4 values(2,4)",
-            "insert into hypatia_graphviz_test_k4 values(3,4)"
+            [1,2],
+            [1,3],
+            [1,4],
+            [2,3],
+            [2,4],
+            [3,4]
         ]
     },
     {
         "table":"hypatia_graphviz_test_petersen",
         "create":"create table hypatia_graphviz_test_petersen (v1 int,v2 int)",
         "insert":[
-            "insert into hypatia_graphviz_test_petersen values(1,2)",
-            "insert into hypatia_graphviz_test_petersen values(1,5)",
-            "insert into hypatia_graphviz_test_petersen values(1,6)",
-            "insert into hypatia_graphviz_test_petersen values(2,3)",
-            "insert into hypatia_graphviz_test_petersen values(2,7)",
-            "insert into hypatia_graphviz_test_petersen values(3,4)",
-            "insert into hypatia_graphviz_test_petersen values(3,8)",
-            "insert into hypatia_graphviz_test_petersen values(4,5)",
-            "insert into hypatia_graphviz_test_petersen values(4,9)",
-            "insert into hypatia_graphviz_test_petersen values(5,1)",
-            "insert into hypatia_graphviz_test_petersen values(5,10)",
-            "insert into hypatia_graphviz_test_petersen values(6,8)",
-            "insert into hypatia_graphviz_test_petersen values(6,9)",
-            "insert into hypatia_graphviz_test_petersen values(7,9)",
-            "insert into hypatia_graphviz_test_petersen values(7,10)",
-            "insert into hypatia_graphviz_test_petersen values(8,10)",
+            [1,2],
+            [1,5],
+            [1,6],
+            [2,3],
+            [2,7],
+            [3,4],
+            [3,8],
+            [4,5],
+            [4,9],
+            [5,1],
+            [5,10],
+            [6,8],
+            [6,9],
+            [7,9],
+            [7,10],
+            [8,10]
+        ]
+    },
+    {
+        "table":"hypatia_cc_ticks_test",
+        "create":"create table hypatia_cc_ticks_test (x int, y real)",
+        "insert":[
+            [1,2.3],
+            [2,6.2],
+            [3,7.778],
+            [4,5.11],
+            [5,4.411],
+            [6,3.77],
+            [7,2.11]
         ]
     }
 ]

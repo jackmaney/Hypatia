@@ -1,6 +1,14 @@
 Revision history for Hypatia
 
-0.026     2012-10-01 19:09:55 America/Chicago
+0.027     2012-10-21 00:35:14 America/Chicago
+
+0.027     2012-10-21 00:28:07 America/Chicago
+
+- Added a type library
+
+- Refactored Hypatia::DBI::Test::SQLite, making the JSON a bit more compact.
+
+- Updated some of the Pod.
 
 0.026     2012-10-01 19:07:34 America/Chicago
 

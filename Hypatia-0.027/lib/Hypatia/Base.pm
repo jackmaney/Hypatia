@@ -1,8 +1,9 @@
 package Hypatia::Base;
 {
-  $Hypatia::Base::VERSION = '0.026';
+  $Hypatia::Base::VERSION = '0.027';
 }
 use Moose;
+use Hypatia::Types qw(HypatiaDBI);
 use Hypatia::DBI;
 use Hypatia::Columns;
 use Moose::Util::TypeConstraints;
@@ -13,10 +14,8 @@ use namespace::autoclean;
 
 
 
-coerce "Hypatia::DBI", from "HashRef", via {Hypatia::DBI->new($_)};
 
-
-has 'dbi'=>(isa=>"Hypatia::DBI",is=>'rw',coerce=>1,predicate=>'use_dbi',handles=>['dbh']);
+has 'dbi'=>(isa=>HypatiaDBI,is=>'rw',coerce=>1,predicate=>'use_dbi',handles=>['dbh']);
 
 
 subtype 'HypatiaColumns' => as maybe_type("Hypatia::Columns");
@@ -180,7 +179,7 @@ Hypatia::Base - An Abstract Base Class
 
 =head1 VERSION
 
-version 0.026
+version 0.027
 
 =head1 ATTRIBUTES
 
