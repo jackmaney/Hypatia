@@ -1,5 +1,6 @@
 package Hypatia::Base;
 use Moose;
+use Hypatia::Types qw(HypatiaDBI);
 use Hypatia::DBI;
 use Hypatia::Columns;
 use Moose::Util::TypeConstraints;
@@ -15,10 +16,8 @@ If the data source is from DBI, then this attribute contains the information nec
 
 =cut
 
-coerce "Hypatia::DBI", from "HashRef", via {Hypatia::DBI->new($_)};
 
-
-has 'dbi'=>(isa=>"Hypatia::DBI",is=>'rw',coerce=>1,predicate=>'use_dbi',handles=>['dbh']);
+has 'dbi'=>(isa=>HypatiaDBI,is=>'rw',coerce=>1,predicate=>'use_dbi',handles=>['dbh']);
 
 =attr columns
 
