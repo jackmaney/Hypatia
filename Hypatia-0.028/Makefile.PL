@@ -9,7 +9,7 @@ use ExtUtils::MakeMaker 6.30;
 
 
 my %WriteMakefileArgs = (
-  "ABSTRACT" => "A Data Visualization API\r",
+  "ABSTRACT" => "A Data Visualization API",
   "AUTHOR" => "Jack Maney <jack\@jackmaney.com>",
   "BUILD_REQUIRES" => {
     "Cwd" => 0,
@@ -38,7 +38,7 @@ my %WriteMakefileArgs = (
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.027",
+  "VERSION" => "0.028",
   "test" => {
     "TESTS" => "t/*.t"
   }

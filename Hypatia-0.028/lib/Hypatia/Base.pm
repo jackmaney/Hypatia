@@ -1,6 +1,6 @@
 package Hypatia::Base;
 {
-  $Hypatia::Base::VERSION = '0.027';
+  $Hypatia::Base::VERSION = '0.028';
 }
 use Moose;
 use Hypatia::Types qw(HypatiaDBI);
@@ -77,22 +77,27 @@ sub _setup_guess_columns
 sub _get_data
 {
 	my $self=shift;
-	my @columns;
+	my @args = ();
 	
 	$self->_guess_columns unless $self->using_columns;
-	
-	if(@_)
+
+	my $found_query = 0;
+	foreach my $arg(@_)
 	{
-		@columns=grep{defined}map{$self->columns->{$_}}@_;
-	}
-	else
-	{
-		@columns = @{$self->columns->column_types};
+		if(defined $self->columns->{$arg} and ref $arg eq ref "" or ref $arg eq ref [])
+		{
+			push @args,$self->columns->{$arg};
+		}
+		elsif(ref $arg eq ref {} and grep{$_ eq "query"}(keys %$arg) and (not $found_query))
+		{
+			push @args,{query=>$arg->{query}};
+			$found_query = 1;
+		}
 	}
 	
 	if($self->use_dbi)
 	{	
-		return $self->dbi->data(@columns);
+		return $self->dbi->data(@args);
 	}
 	else
 	{
@@ -179,7 +184,7 @@ Hypatia::Base - An Abstract Base Class
 
 =head1 VERSION
 
-version 0.027
+version 0.028
 
 =head1 ATTRIBUTES
 

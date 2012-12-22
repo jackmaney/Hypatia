@@ -1,6 +1,6 @@
 package Hypatia::DBI::Test::SQLite;
 {
-  $Hypatia::DBI::Test::SQLite::VERSION = '0.027';
+  $Hypatia::DBI::Test::SQLite::VERSION = '0.028';
 }
 use Moose;
 use DBI;
@@ -94,13 +94,22 @@ sub load_table
     {
         if($_->{table} eq $self->table)
         {
+			use Data::Dumper;
+			print "Here's the table data: " . Dumper($_) . "\n\n";
             $dbh->do($_->{create}) or die $dbh->errstr;
             
+			my $sth = $dbh->prepare("insert into " . $self->table . " values (?,?)")
+				or die $dbh->errstr;
+
             foreach my $value_array (@{$_->{insert}})
             {
-                my $insert_statement = "insert into " . $self->table . " values (" . join(",",@$value_array) . ")";
-                $insert_statement=~s/"/'/g;
-                $dbh->do($insert_statement) or die $dbh->errstr;
+				$sth->execute(@$value_array) or die $dbh->errstr;
+				my @a = @$value_array;
+				foreach(@a)
+				{
+					$_ = "NULL" unless defined $_;
+				}
+				print "inserting: " . join(",",@a) . "\n";
             }
             $found=1;
             last;
@@ -127,7 +136,7 @@ Hypatia::DBI::Test::SQLite
 
 =head1 VERSION
 
-version 0.027
+version 0.028
 
 =head1 AUTHOR
 
@@ -250,5 +259,15 @@ __DATA__
             [6,3.77],
             [7,2.11]
         ]
-    }
+    },
+	{
+		"table":"hypatia_graphviz_test_k3_isolated",
+		"create":"create table hypatia_graphviz_test_k3_isolated (a int, b int)",
+		"insert":[
+			[1,2],
+			[2,3],
+			[3,1],
+			[4,null]
+		]
+	}
 ]
