@@ -1,6 +1,6 @@
 Revision history for Hypatia
 
-0.028     2012-12-22 12:59:42 CST6CDT
+0.028     2012-12-22 13:00:36 CST6CDT
 
 - Added tables to Hypatia::DBI::Test::SQLite for use in unit tests.
 
