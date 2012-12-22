@@ -1,5 +1,7 @@
 Revision history for Hypatia
 
+0.029     2012-12-22 14:16:02 CST6CDT
+
 0.029     2012-12-22 14:15:04 CST6CDT
 
 - Fixed a silly bug in H:D:T:S that broke Hypatia::Chart::Clicker.
