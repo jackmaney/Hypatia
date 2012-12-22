@@ -1,4 +1,7 @@
 package Hypatia::DBI::Test::SQLite;
+{
+  $Hypatia::DBI::Test::SQLite::VERSION = '0.029';
+}
 use Moose;
 use DBI;
 use JSON;
@@ -117,6 +120,30 @@ sub load_table
 
 __PACKAGE__->meta->make_immutable;
 1;
+
+=pod
+
+=head1 NAME
+
+Hypatia::DBI::Test::SQLite
+
+=head1 VERSION
+
+version 0.029
+
+=head1 AUTHOR
+
+Jack Maney <jack@jackmaney.com>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2012 by Jack Maney.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
+
 __DATA__
 [
     {
